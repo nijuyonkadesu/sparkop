@@ -19,13 +19,6 @@ spark supports:
 https://redis.io/docs/install/install-stack/linux/
 ```bash
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-export PATH="$HOME/.cargo/bin:$PATH"
-rustc --version
-cargo --version
-
-```
 
 ```bash
 sudo systemctl start redis-stack-server
