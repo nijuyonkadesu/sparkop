@@ -12,7 +12,7 @@ user1 = {
     "name": "Paul John",
     "email": "paul.john@example.com",
     "age": 42,
-    "city": "London"
+    "city": "London, Chennai, Akihabara, Fuyuki city"
 }
 user2 = {
     "name": "Eden Zamir",
@@ -36,7 +36,7 @@ r.json().set("user:1", Path.root_path(),  user1)
 r.json().set("user:2", Path.root_path(),  user2)
 r.json().set("user:3", Path.root_path(),  user3)
 
-rs_user = r.ft("idx:sampleusers")
+rs_user = r.ft("idx:users_comma")
 rs_user.create_index(
         fields=search_schema, 
         definition=IndexDefinition(

@@ -63,8 +63,8 @@
         "categories": "string",
         "name": "string",
         "prices": {
-            "maxAmount": "double",
-            "minAmount": "double",
+            "amountMax": "double",
+            "amountMin": "double",
             "dateAdded": "timestamp",
         },
     }
