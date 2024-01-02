@@ -3,7 +3,7 @@
 from typing import List
 from fastapi.routing import APIRouter
 
-from app.models.shoes import Product, ProductInfo, Prices, RequestProduct
+from app.models.shoes import Product, RequestProduct
 from app.service.redis_service import RedisService
 from app.service.service_base import Service
 

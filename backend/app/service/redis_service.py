@@ -4,6 +4,7 @@ from typing import List
 import redis
 from redis.commands.search import Search
 from redis.commands.search.query import Query
+from app.api.deps import update_health
 
 from app.models.shoes import Product, RequestProduct
 from app.service.service_base import Service
@@ -11,13 +12,12 @@ from app.service.service_base import Service
 class RedisService(Service):
     r: redis.Redis
     rs_shoes: Search 
-    health = False
 
     def __init__(self):
         try: 
             self.r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
             self.rs_shoes = self.r.ft("idx:shoes")
-            self.health = True
+            update_health("redis")
         except Exception as e: 
             print("unable to create redis client")
             self.health = False
