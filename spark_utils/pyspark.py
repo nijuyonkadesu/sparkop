@@ -31,6 +31,7 @@ root_dir = Path(__file__).parent.parent
 def get_dataframe():
     df =  spark.read.csv(str(root_dir / "assets/Datafiniti_Womens_Shoes.csv"), header=True, inferSchema=True)
     filtered_df = df.select(needed)\
+            .withColumn("brand", regexp_replace(col("brand"), r"[^a-zA-Z0-9 ]", "" ))\
             .withColumn("dateAdded", unix_timestamp(col("dateAdded"), "yyyy-MM-dd HH:mm:ss").cast("Integer"))\
             .withColumn("dateUpdated", unix_timestamp(col("dateUpdated"), "yyyy-MM-dd HH:mm:ss").cast("Integer"))\
             .withColumn("prices.dateAdded", unix_timestamp(col("`prices.dateAdded`"), "yyyy-MM-dd HH:mm:ss").cast("Integer"))\

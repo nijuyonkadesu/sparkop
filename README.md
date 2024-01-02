@@ -23,7 +23,14 @@ https://redis.io/docs/install/install-stack/linux/
 ```bash
 sudo systemctl start redis-stack-server
 redis-cli -h 127.0.0.1 -p 6379
+FT.TAGVALS idx:shoes brand
+FT.SEARCH idx:shoes "@colors:{silver} @brand:{Unique Bargains} women"
+FT.SEARCH idx:shoes "@brand:{Brinley\\ Co\\.}"
+redis-cli -h 127.0.0.1 -p 6379 keys product:* | xargs redis-cli DEL
 ```
+## Tip
+Do not save special characters in Redis.
+Use redis as cache, not as search engine 😁
 
 ## Debug
 ```bash

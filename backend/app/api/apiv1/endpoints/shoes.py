@@ -13,12 +13,14 @@ service: Service = RedisService()
 # TODO: use depends
 
 @router.get("/{id}", response_model=Product)
-def fetch_product(id: str) -> Product:
-    return service.get_single_item(id)
+def fetch_product(id: str):
+    try:
+        return service.get_single_item(id)
+    except Exception as e:
+        raise e
 
 @router.post("/search", response_model=List[Product])
-def fetch_products(req: RequestProduct) -> List[Product]:
+def fetch_products(req: RequestProduct):
     return service.get_items(req)
 
 
-# TODO: return http errors in failure cases

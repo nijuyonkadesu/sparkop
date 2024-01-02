@@ -1,5 +1,6 @@
 import json
 from typing import List
+from fastapi import HTTPException
 
 import redis
 from redis.commands.search import Search
@@ -25,12 +26,27 @@ class RedisService(Service):
 
     def get_single_item(self, id: str) -> Product:
         product = self.r.json().get("product:" + id)
-        return Product(**product) 
+        if product is None:
+            raise HTTPException(status_code=404, detail="Item not found") 
+        else: 
+            return Product(**product) 
 
     def get_items(self, req: RequestProduct) -> List[Product]:
+        def preprocess_spl_chars(s: str):
+            # return "".join(["\\" + c if not c.isalnum() else c for c in s])
+            return s
+
         res: List[Product] = []
+        params = ""
+        if len(req.brand) > 0:
+            params += f"@brand:{ {preprocess_spl_chars(req.brand)} } "
+        if req.color.isalnum():
+            params += f"@colors:{ {req.color} } "
+        params += f"{preprocess_spl_chars(req.categories)} "
+        print(f"params: >{params}<", f"req: >{req}<")
+
         products = self.rs_shoes \
-                .search(Query(f"@colors:{ {req.color} } @brand:{ {req.brand} } {req.categories} ") \
+                .search(Query(params) \
                 .paging(req.offset, req.limit) \
                 .return_field("$"))
 
@@ -41,5 +57,4 @@ class RedisService(Service):
 
         return res
 
-# TODO: server crashes if brand string is "*"
-# TODO: make some search options optional
+# WARNING: redis search with special characters is a bad idea. It's a endless conflit with raw and formatted string. I couldn't find a fix
