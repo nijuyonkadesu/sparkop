@@ -5,7 +5,7 @@ import redis
 from redis.commands.search import Search
 from redis.commands.search.query import Query
 
-from app.models.shoes import Product
+from app.models.shoes import Product, RequestProduct
 from app.service.service_base import Service
 
 class RedisService(Service):
@@ -23,10 +23,16 @@ class RedisService(Service):
             self.health = False
             raise e
 
-    def get_single_item(self, id: str) -> List[Product]:
+    def get_single_item(self, id: str) -> Product:
+        product = self.r.json().get("product:" + id)
+        return Product(**product) 
+
+    def get_items(self, req: RequestProduct) -> List[Product]:
         res: List[Product] = []
-        color = "silver"
-        products = self.rs_shoes.search(Query(f"@colors:{ {color} }").return_field("$"))
+        products = self.rs_shoes \
+                .search(Query(f"@colors:{ {req.color} } @brand:{ {req.brand} } {req.categories} ") \
+                .paging(req.offset, req.limit) \
+                .return_field("$"))
 
         for product in products.docs:
             shoe = product["json"]
@@ -35,4 +41,5 @@ class RedisService(Service):
 
         return res
 
-
+# TODO: server crashes if brand string is "*"
+# TODO: make some search options optional

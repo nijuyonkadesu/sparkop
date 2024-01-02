@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from pydantic import BaseModel
 
 @dataclass
 class Prices:
@@ -26,4 +26,11 @@ class Product:
     productInfo: ProductInfo
  
 
+# the requests made into the api should be a pydantic class
+class RequestProduct(BaseModel):
+    color: str
+    brand: str
+    categories: str
+    offset: int = 0
+    limit: int = 10
 
