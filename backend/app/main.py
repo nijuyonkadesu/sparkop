@@ -5,8 +5,6 @@ from app.core.vars import app_health_status
 
 app = FastAPI()
 
-app.include_router(shoes.router)
-
 @app.get("/health")
 def health():
     return app_health_status 
@@ -14,3 +12,5 @@ def health():
 @app.get("/ping")
 def ping():
     return "pong"
+
+app.include_router(shoes.router)

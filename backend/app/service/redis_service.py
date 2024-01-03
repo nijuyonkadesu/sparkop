@@ -17,12 +17,13 @@ class RedisService(Service):
     def __init__(self):
         try: 
             self.r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+            self.r.ping()
             self.rs_shoes = self.r.ft("idx:shoes")
             update_health("redis")
         except Exception as e: 
-            print("unable to create redis client")
+            print("faulty redis client connection, check host / port etc", e)
             self.health = False
-            raise e
+            # raise e
 
     def get_single_item(self, id: str) -> Product:
         product = self.r.json().get("product:" + id)

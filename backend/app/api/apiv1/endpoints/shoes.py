@@ -1,14 +1,12 @@
-
-
 from typing import List
 from fastapi.routing import APIRouter
+from app.core.utils import get_service
 
 from app.models.shoes import Product, RequestProduct
-from app.service.redis_service import RedisService
 from app.service.service_base import Service
 
 router = APIRouter(prefix="/shoes", tags=["shoes"])
-service: Service = RedisService()
+service: Service = get_service("redis") 
 
 # TODO: use depends
 
@@ -22,5 +20,4 @@ def fetch_product(id: str):
 @router.post("/search", response_model=List[Product])
 def fetch_products(req: RequestProduct):
     return service.get_items(req)
-
 
