@@ -24,6 +24,10 @@ spark supports:
 - https://docs.docker.com/engine/install/ubuntu/#installation-methods
 - https://docs.docker.com/engine/install/linux-postinstall/
 
+## install spark operator
+- https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/tree/master/charts/spark-operator-chart
+- https://medium.com/nerd-for-tech/pyspark-spark-operator-amazon-eks-big-data-on-steroids-7d1ccedb765b
+
 ```bash
 sudo systemctl enable redis-stack-server
 sudo systemctl start redis-stack-server
@@ -32,10 +36,41 @@ FT.TAGVALS idx:shoes brand
 FT.SEARCH idx:shoes "@colors:{silver} @brand:{Unique Bargains} women"
 FT.SEARCH idx:shoes "@brand:{Brinley\\ Co\\.}"
 redis-cli -h 127.0.0.1 -p 6379 keys product:* | xargs redis-cli DEL
+
+minikube addons enable ingress
+minikube addons enable ingress-dns
+
+kubectl create namespace spark
+helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+helm install -n spark my-release spark-operator/spark-operator
+kubectl -- get pods -n spark
+minikube image ls
+
+docker run -d --name try -p 80:80 shoes:0.1
+kubectl port-forward service/search-api-service 8080:80
+kubectl -- get sparkapplication -w -n spark
+kubectl -- delete sparkapplication spark-csv-write-job -n spark
+kubectl -- describe sparkapplication spark-csv-write-job -n spark
+
+
+# m for minikube image build it creates 2 files
+username@lap:/opt/spark$ ./bin/docker-image-tool.sh -m -t 0.0.1 -p ./kubernetes/dockerfiles/spark/bindings/python/Dockerfile build
+# docker.io/library/spark:0.0.1
+# docker.io/library/spark-py:0.0.1
+
+minikube service redis-service --url
+https://bin.utwitch.net/wulefevuwo.sql
+
+# -n is the namespace
+# TODO: SparkApplication, CRD (custom resource definition)
+# TODO: https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md#using-a-sparkapplication
+
 ```
 ## Tip
 Do not save special characters in Redis.
 Use redis as cache, not as search engine 😁
+422 for not found instead of 404
+exec inside a container, and ping using service name to check if its working
 
 ## Debug
 ```bash
@@ -50,6 +85,7 @@ KEYS *user*
 - 1DB per redis instance (to reduce expiry key overhead) - 1 DB per feature
 - clustering
 - [redis examples](https://redis.readthedocs.io/en/stable/examples)
+- [volume & persistent volume basics](https://www.alibabacloud.com/blog/kubernetes-volume-basics-emptydir-and-persistentvolume_594834)
 
 ## Reffered Articles:
 - https://www.linkedin.com/pulse/redis-design-patterns-high-volume-applications-melvin-rook

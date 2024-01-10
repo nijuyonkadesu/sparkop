@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis
+    environment: dev
+    tier: database
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis 
+  template:
+    metadata: 
+      name: redis-pod
+      labels:
+        app: redis 
+    spec: 
+      containers:
+      - name: redis 
+        image: redis:0.1 
+        ports:
+        - containerPort: 6379 
+---
+
+# this service listens to anything that matches the label & listens port
+# since, it's a service, an image is not needed
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: redis-service
+  labels:
+    app: redis 
+
+spec:
+  selector:
+    app: redis
+
+  ports:
+    - protocol: TCP
+      port: 6380 
+      targetPort: 6379
+

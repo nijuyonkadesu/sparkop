@@ -16,7 +16,8 @@ class RedisService(Service):
 
     def __init__(self):
         try: 
-            self.r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+            # use localhost and 6379 for local testing
+            self.r = redis.Redis(host="redis-service", port=6380, db=0, decode_responses=True)
             self.r.ping()
             self.rs_shoes = self.r.ft("idx:shoes")
             update_health("redis")

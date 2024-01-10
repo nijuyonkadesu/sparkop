@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: search-api-deployment
+  labels:
+    app: fastapi
+    environment: dev
+    tier: backend
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata: 
+      name: search-api-pod
+      labels:
+        app: fastapi
+    spec: 
+      containers:
+      - name: fastapi
+        image: shoes:0.2 
+        ports:
+        - containerPort: 80
+
+---
+
+# this service listens to anything that matches the label & listens port
+# since, it's a service, an image is not needed
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: search-api-service
+  labels:
+    app: fastapi 
+
+spec:
+  selector:
+    app: fastapi
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
