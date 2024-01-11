@@ -67,6 +67,7 @@ https://bin.utwitch.net/wulefevuwo.sql
 
 ```
 ## Tip
+use: https://github.com/derailed/k9s
 Do not save special characters in Redis.
 Use redis as cache, not as search engine 😁
 422 for not found instead of 404
@@ -146,3 +147,5 @@ $ desktop-file-validate /usr/share/applications/postman.desktop
 $ sudo update-desktop-database
 ```
 8. If you still can't see the icon, try logging out and logging back into your system [Source 4](https://tech.raturi.in/how-install-and-use-postman).
+
+
